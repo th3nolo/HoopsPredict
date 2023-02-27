@@ -8,6 +8,7 @@ import { enviroments } from './environments';
 import config from './config';
 import * as dotenv from 'dotenv';
 import { NbaDataModule } from './nba-data/nba-data.module';
+import { ScheduleModule } from '@nestjs/schedule';
 dotenv.config();
 
 @Module({

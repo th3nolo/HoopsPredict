@@ -35,7 +35,10 @@ import {
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(Games.name) private Games: Model<Games>
+  ) {}
 
   private readonly API_BASE_URL: string = process.env.API_BASE_URL;
   private readonly API_KEY: string = process.env.API_KEY;
@@ -77,5 +80,16 @@ export class UserService {
       );
     });
     return upcomingGames;
+  }
+
+  async storeGames(gameids: any[]) {
+    for (let i = 0; i < gameids.length; i++) {
+      const game = new this.Games({ gameid: gameids[i] });
+      await game.save();
+    }
+  }
+
+  async BoxScore(gameId: string): Promise<BoxScore> {
+    return this.get<BoxScore>(`/games/${gameId}/boxscore`);
   }
 }
