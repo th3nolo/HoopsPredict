@@ -10,4 +10,8 @@ export class UserController {
   async getDailySchedule(): Promise<GamesEntity[]> {
     return this.userService.getDailySchedule();
   }
+  @Get('/box-scores')
+  async getBoxScores(): Promise<any> {
+    return this.userService.getBoxScoresForTargetGames();
+  }
 }

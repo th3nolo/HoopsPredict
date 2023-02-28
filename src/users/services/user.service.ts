@@ -53,6 +53,7 @@ export class UserService {
       `${this.API_BASE_URL}/en${endpoint}.${this.format}`,
       {
         params: { api_key: this.API_KEY },
+        responseType: 'json',
       }
     );
     return response.data as T;
@@ -89,7 +90,80 @@ export class UserService {
     }
   }
 
-  async BoxScore(gameId: string): Promise<BoxScore> {
-    return this.get<BoxScore>(`/games/${gameId}/boxscore`);
+  // async BoxScore(gameId: string): Promise<any> {
+  //   return this.get<any>(`/games/${gameId}/summary`);
+  // }
+  async BoxScore(gameId: string): Promise<any> {
+    const response = await axios.get(
+      `${this.API_BASE_URL}/en/games/${gameId}/summary.${this.format}`,
+      {
+        params: { api_key: this.API_KEY },
+      }
+    );
+    return response.data;
   }
+
+  async getBoxScoresForTargetGames() {
+    const target_games_27 = [
+      'd42699b1-a858-4e4e-8dc3-19bee6d46a60',
+      // 'efb11f9b-ac96-4810-ad0f-794f07aa0394',
+      // 'b0dc082b-c9bb-44db-a201-df84ae2fae7d',
+      // '35dcfa81-38a2-4bfa-aee1-1e9983534720',
+    ];
+
+    const summaries = {};
+
+    for (const gameId of target_games_27) {
+      const boxScore = await this.BoxScore(gameId);
+      console
+      summaries[gameId] = boxScore.summary;
+    }
+
+    console.log(summaries);
+
+    return summaries;
+  }
+
+  // async getBoxScoresForTargetGames() {
+  //   const target_games_27 = [
+  //     'd42699b1-a858-4e4e-8dc3-19bee6d46a60',
+  //     'efb11f9b-ac96-4810-ad0f-794f07aa0394',
+  //     'b0dc082b-c9bb-44db-a201-df84ae2fae7d',
+  //     '35dcfa81-38a2-4bfa-aee1-1e9983534720',
+  //   ];
+
+  //   const summaries = {};
+  //   let totalPoints = 0;
+  //   const pointsByGame = {};
+
+  //   for (const gameId of target_games_27) {
+  //     const boxScore = await this.BoxScore(gameId);
+  //     summaries[gameId] = boxScore.summary;
+  //     const gameSummary = summaries[gameId];
+  //     const points = gameSummary.home.points + gameSummary.away.points;
+  //     pointsByGame[gameId] = points;
+  //     totalPoints += points;
+  //   }
+
+  //   console.log(summaries);
+
+  //   const result = {
+  //     pointsByGame,
+  //     totalPoints,
+  //     gameInfo: {},
+  //   };
+
+  //   for (const gameId in summaries) {
+  //     const gameSummary = summaries[gameId];
+  //     result.gameInfo[gameId] = {
+  //       homeTeamName: gameSummary.home.name,
+  //       awayTeamName: gameSummary.away.name,
+  //     };
+  //   }
+
+  //   console.log(result.totalPoints);
+  //   console.log(result.pointsByGame);
+  //   console.log(result.gameInfo);
+  //   return result;
+  // }
 }
