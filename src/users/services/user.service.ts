@@ -1,4 +1,5 @@
 import { NbaDataService } from './../../nba-data/services/nba-data.service';
+import { Schedule } from '../interfaces/api/api.dailyschedule.interfaces';
 import { Injectable, Inject } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -10,7 +11,6 @@ dotenv.config();
 import { Games, User, Predictions } from '../entities/user.entity';
 import { PredictionRequest } from '../interfaces/controller/controller.get-prediction.interface';
 import {
-  Schedule,
   League,
   GamesEntity,
   TimeZones,
@@ -33,6 +33,8 @@ import {
   Draft,
   InjuriesEntity,
 } from '../interfaces/api/api.teamprofile.interfaces';
+import { GamesInfo } from '../interfaces/service/nba-data.service.GameInfo';
+import { parseISO } from 'date-fns';
 
 @Injectable()
 export class UserService {
@@ -146,7 +148,8 @@ export class UserService {
         startDate: startDate,
         endDate: endDate,
       });
-      await newGame.save();
+      const res = await newGame.save();
+      console.log(res);
     }
     const lobby = await this.Games.findOne().sort({ _id: -1 }).limit(1);
     const newPredictionInstance = new this.Predictions({
@@ -156,6 +159,45 @@ export class UserService {
       prediction,
     });
     await newPredictionInstance.save();
+  }
+
+  async getRound() {
+    const checklobby = await this.Games.findOne().sort({ id: -1 }).limit(1);
+    console.log(checklobby);
+    if (!checklobby) {
+      const date = new Date();
+      const timeZone = 'America/Denver';
+      const formattedDate = new Intl.DateTimeFormat('en-US', {
+        timeZone,
+      }).format(date);
+      const gamesToday = await this.nbaDataService.UpcomingGamesByDay();
+      console.log(gamesToday);
+      const startDate = formattedDate;
+      const day = gamesToday[0].scheduled.slice(8, 10);
+      const month = gamesToday[0].scheduled.slice(5, 7);
+      const year = gamesToday[0].scheduled.slice(0, 4);
+      const format = `${month}/${day}/${year}`;
+      const newGame = new this.Games({
+        id: 1,
+        games: gamesToday,
+        startDate: startDate,
+        endDate: format,
+      });
+      const res = await newGame.save();
+      return res;
+    }
+    const lobby = await this.Games.findOne().sort({ _id: -1 }).limit(1);
+    if (new Date(lobby.games[0].scheduled) <= new Date()) {
+      const newGame = new this.Games({
+        id: lobby.id + 1,
+        games: await this.nbaDataService.UpcomingGamesByDay(),
+        startDate: new Date(),
+        endDate: new Date(lobby.games[0].scheduled),
+      });
+      const res = await newGame.save();
+      return res;
+    }
+    return lobby;
   }
 
   async getBoxScoresForTargetGames() {

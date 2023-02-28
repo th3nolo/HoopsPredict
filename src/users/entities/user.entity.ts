@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Schedule } from '../interfaces/api/api.dailyschedule.interfaces';
+//import { Schedule } from '../interfaces/api/api.dailyschedule.interfaces';
+import { GamesInfo } from '../interfaces/service/nba-data.service.GameInfo';
 
 @Schema({ collection: 'users' })
 export class User extends Document {
@@ -36,8 +37,11 @@ export class Predictions extends Document {
 export class Games extends Document {
   @Prop({ required: true, unique: true })
   id: string;
-  games: Schedule[];
+  @Prop({ required: true })
+  games: GamesInfo[];
+  @Prop({ required: true })
   startDate: string;
+  @Prop({ required: true })
   endDate: string;
 }
 

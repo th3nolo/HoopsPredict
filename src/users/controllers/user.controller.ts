@@ -26,4 +26,9 @@ export class UserController {
   async getBoxScores(): Promise<any> {
     return this.userService.getBoxScoresForTargetGames();
   }
+
+  @Get('/get-round')
+  async getRound(): Promise<any> {
+    return this.userService.getRound();
+  }
 }
