@@ -1,3 +1,4 @@
+import { NbaDataService } from './../../nba-data/services/nba-data.service';
 import { Injectable, Inject } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -38,7 +39,8 @@ export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(Games.name) private Games: Model<Games>,
-    @InjectModel(Predictions.name) private Predictions: Model<Predictions>
+    @InjectModel(Predictions.name) private Predictions: Model<Predictions>,
+    private readonly nbaDataService: NbaDataService
   ) {}
 
   private readonly API_BASE_URL: string = process.env.API_BASE_URL;
@@ -128,6 +130,24 @@ export class UserService {
 
   async getPrediction(body: PredictionRequest): Promise<any> {
     const { email, address, prediction } = body;
+    const checklobby = await this.Games.findOne().sort({ _id: -1 }).limit(1);
+    if (!checklobby) {
+      const date = new Date();
+      const timeZone = 'America/Denver';
+      const formattedDate = new Intl.DateTimeFormat('en-US', {
+        timeZone,
+      }).format(date);
+      const gamesToday = await this.nbaDataService.UpcomingGamesByDay();
+      const startDate = formattedDate;
+      const endDate = new Date(gamesToday[0].scheduled);
+      const newGame = new this.Games({
+        id: 1,
+        games: [gamesToday],
+        startDate: startDate,
+        endDate: endDate,
+      });
+      await newGame.save();
+    }
     const lobby = await this.Games.findOne().sort({ _id: -1 }).limit(1);
     const newPredictionInstance = new this.Predictions({
       email,

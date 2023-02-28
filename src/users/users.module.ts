@@ -1,3 +1,5 @@
+import { ApiService } from './../nba-data/services/api.service';
+import { NbaDataService } from './../nba-data/services/nba-data.service';
 import { Module } from '@nestjs/common';
 import { UserController } from './controllers/user.controller';
 import { UserService } from './services/user.service';
@@ -21,7 +23,7 @@ import { StoreGamesCron } from './cronjobs/store.games';
     ]),
     ScheduleModule.forRoot(),
   ],
-  providers: [UserService, StoreGamesCron],
+  providers: [NbaDataService, UserService, StoreGamesCron, ApiService],
   controllers: [UserController],
   exports: [UserService],
 })

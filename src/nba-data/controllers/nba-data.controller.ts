@@ -32,7 +32,7 @@ export class NbaDataController {
   @ApiOperation({ summary: 'Get games scheduled for a specific day' })
   @ApiOkResponse({ description: 'Games retrieved successfully' })
   async getTodayGames(): Promise<GamesInfo[]> {
-    return this.nbaDataService.getTodayGames();
+    return await this.nbaDataService.getTodayGames();
   }
 
   @Post('passed-games')

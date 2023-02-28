@@ -7,5 +7,6 @@ import { ApiCacheService } from './services/cache.service';
 @Module({
   controllers: [NbaDataController],
   providers: [NbaDataService, ApiService],
+  exports: [NbaDataService, ApiService],
 })
 export class NbaDataModule {}

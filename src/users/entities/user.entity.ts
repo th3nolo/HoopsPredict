@@ -37,6 +37,8 @@ export class Games extends Document {
   @Prop({ required: true, unique: true })
   id: string;
   games: Schedule[];
+  startDate: string;
+  endDate: string;
 }
 
 export const PredictionsSchema = SchemaFactory.createForClass(Predictions);

@@ -18,6 +18,14 @@ export class NbaDataService {
     return games.map((game) => this.mapGameToInfo(game));
   }
 
+  async UpcomingGamesByDay(): Promise<GamesInfo[]> {
+    const games = await this.apiService.UpcomingGamesByDay();
+    //console.log(`games: ${JSON.stringify(games)}`);
+    const gamesInfo = games.map((game) => this.mapGameToInfo(game));
+    //console.log(gamesInfo);
+    return gamesInfo;
+  }
+
   async getUpcomingGames(
     year: number,
     month: number,

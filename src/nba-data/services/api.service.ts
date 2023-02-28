@@ -43,14 +43,13 @@ export class ApiService {
 
   private async get<T>(endpoint: string): Promise<T> {
     console.log(
-      `making a request for this endpoint: ${this.API_BASE_URL}/en${endpoint}.${this.format}`
+      `making a request for this endpoint: ${this.API_BASE_URL}/en${endpoint}.${this.format}?api_key=${this.API_KEY}`
     );
+
     const response = await axios.get(
-      `${this.API_BASE_URL}/en${endpoint}.${this.format}`,
-      {
-        params: { api_key: this.API_KEY },
-      }
+      `${this.API_BASE_URL}/en${endpoint}.${this.format}?api_key=${this.API_KEY}`
     );
+
     return response.data as T;
   }
 
@@ -79,10 +78,12 @@ export class ApiService {
     const paddedDay = day.toString().padStart(2, '0');
     const date = new Date(year, month - 1, day);
     console.log('The filter date: ');
-    console.log(date);
+    console.log(status);
+    console.log(year, paddedDay, paddedMonth);
     const games: Schedule = await this.get<Schedule>(
       `/games/${year}/${paddedMonth}/${paddedDay}/schedule`
     );
+    //console.log(`The games: ${JSON.stringify(games.games)} `);
 
     const filterFns = {
       closed: (game) =>
@@ -96,6 +97,7 @@ export class ApiService {
     const filterFn = filterFns[status];
     if (filterFn) {
       const filteredGames = games.games.filter(filterFn);
+      //console.log(`The filtered games: ${JSON.stringify(filteredGames)}`);
       return filteredGames;
     } else {
       throw new Error(`Invalid status: ${status}`);
@@ -180,6 +182,21 @@ export class ApiService {
     }
 
     return games;
+  }
+
+  async UpcomingGamesByDay(): Promise<GamesEntity[]> {
+    console.log('executing the upcoming by day');
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const filteredGames = await this.filterGamesByStatus(
+      'scheduledSinceToday',
+      year,
+      month,
+      day
+    );
+    return filteredGames;
   }
 
   async todayGames(): Promise<GamesEntity[]> {
