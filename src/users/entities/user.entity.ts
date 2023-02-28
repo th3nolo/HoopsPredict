@@ -21,11 +21,14 @@ export class Predictions extends Document {
   @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ required: true, unique: true })
-  username: string;
+  @Prop({ required: false, unique: true })
+  address: string;
 
-  @Prop([{ type: Types.ObjectId, ref: 'lobby' }])
+  @Prop({ type: Types.ObjectId, ref: 'games', required: true })
   lobby: string;
+
+  @Prop({ required: true })
+  prediction: string;
 }
 
 @Schema({ collection: 'games' })
