@@ -127,11 +127,11 @@ export class UserService {
 
   async getPrediction(body: PredictionRequest): Promise<any> {
     const { email, address, prediction } = body;
-    const lobby = this.Games.find({});
+    const lobby = await this.Games.findOne().sort({ _id: -1 }).limit(1);
     const newPredictionInstance = new this.Predictions({
       email,
       address,
-      lobby,
+      lobby: lobby._id,
       prediction,
     });
     await newPredictionInstance.save();
