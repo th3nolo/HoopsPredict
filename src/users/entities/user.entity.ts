@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { Schedule } from '../interfaces/api/api.dailyschedule.interfaces';
 
 @Schema({ collection: 'users' })
 export class User extends Document {
@@ -35,6 +36,7 @@ export class Predictions extends Document {
 export class Games extends Document {
   @Prop({ required: true, unique: true })
   id: string;
+  games: Schedule[];
 }
 
 export const PredictionsSchema = SchemaFactory.createForClass(Predictions);
