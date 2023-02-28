@@ -1,0 +1,26 @@
+name = "fantasy-sports-backend-nestjs"
+
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+restartPolicyType = "ALWAYS"
+restartPolicyMaxRetries = 10
+
+[databases.default]
+uri = "mongodb://<username>:<password>@<host>:<port>/<database>"
+
+[services.web]
+env.PORT = "$PORT"
+env.MONGODB_URI = "$MONGODB_URI"
+env.URI = "$URI"
+env.API_BASE_URL = "$API_BASE_URL"
+env.NBA_API_KEY = "$NBA_API_KEY"
+env.HOSTAPI = "$HOSTAPI"
+env.LANG = "$LANG"
+env.FORMAT = "$FORMAT"
+build = "nix-build"
+command = "./result/bin/fantasy-sports-backend-nestjs"
+
+[addons.NIX]
+plan = "nixpacks:standard"
