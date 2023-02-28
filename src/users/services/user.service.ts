@@ -6,8 +6,8 @@ import axios from 'axios';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { Games, User } from '../entities/user.entity';
-import { ReceivePredictions } from '../dtos/user.dto';
+import { Games, User, Predictions } from '../entities/user.entity';
+import { PredictionRequest } from '../interfaces/controller/controller.get-prediction.interface';
 import {
   Schedule,
   League,
@@ -37,7 +37,8 @@ import {
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
-    @InjectModel(Games.name) private Games: Model<Games>
+    @InjectModel(Games.name) private Games: Model<Games>,
+    @InjectModel(Predictions.name) private Predictions: Model<Predictions>
   ) {}
 
   private readonly API_BASE_URL: string = process.env.API_BASE_URL;
@@ -91,5 +92,17 @@ export class UserService {
 
   async BoxScore(gameId: string): Promise<BoxScore> {
     return this.get<BoxScore>(`/games/${gameId}/boxscore`);
+  }
+
+  async getPrediction(body: PredictionRequest): Promise<any> {
+    const { email, address, prediction } = body;
+    const lobby = this.Games.find({});
+    const newPredictionInstance = new this.Predictions({
+      email,
+      address,
+      lobby,
+      prediction,
+    });
+    await newPredictionInstance.save();
   }
 }

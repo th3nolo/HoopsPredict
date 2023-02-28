@@ -1,6 +1,6 @@
 import { GamesEntity } from '../api/api.dailyschedule.interfaces';
 
-export interface  GamesInfo {
+export interface GamesInfo {
   id: GamesEntity['id'];
   status: GamesEntity['status'];
   scheduled: GamesEntity['scheduled'];
