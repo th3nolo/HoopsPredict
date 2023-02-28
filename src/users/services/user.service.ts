@@ -115,8 +115,8 @@ export class UserService {
 
     for (const gameId of target_games_27) {
       const boxScore = await this.BoxScore(gameId);
-      console
-      summaries[gameId] = boxScore.summary;
+      console.log(boxScore);
+      summaries[gameId] = boxScore;
     }
 
     console.log(summaries);
