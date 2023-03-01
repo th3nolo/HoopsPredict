@@ -23,4 +23,11 @@ export class ReceivePredictions {
   predictions: string;
 }
 
+export class emailDto {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  email: string;
+}
+
 export class UpdateUserDto extends PartialType(ReceivePredictions) {}
