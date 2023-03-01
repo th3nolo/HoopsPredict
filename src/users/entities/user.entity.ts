@@ -20,10 +20,10 @@ export class User extends Document {
 
 @Schema({ collection: 'predictions' })
 export class Predictions extends Document {
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   email: string;
 
-  @Prop({ required: false, unique: true })
+  @Prop({ required: false })
   address: string;
 
   @Prop({ type: Types.ObjectId, ref: 'games', required: true })
