@@ -1,9 +1,8 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { GamesEntity } from '../interfaces/api/api.dailyschedule.interfaces';
 import { PredictionRequest } from '../interfaces/controller/controller.get-prediction.interface';
 import { ApiOperation, ApiTags, ApiBody, ApiOkResponse } from '@nestjs/swagger';
-import { emailDto } from '../dtos/user.dto';
 
 @Controller('users')
 export class UserController {
@@ -33,10 +32,9 @@ export class UserController {
     return this.userService.getRound();
   }
 
-  @Post('/get-user-predictions')
+  @Get('/get-user-predictions')
   @ApiOperation({ summary: 'Gets the user predictions' })
-  async getUserPrediction(@Body() emailDto: emailDto): Promise<any> {
-    const email = emailDto.email;
+  async getUserPrediction(@Query('email') email: string): Promise<any> {
     return this.userService.getUserPrediction(email);
   }
 }
