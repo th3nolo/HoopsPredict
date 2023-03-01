@@ -23,7 +23,7 @@ export class Predictions extends Document {
   @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ required: false, unique: true })
+  @Prop({ required: false })
   address: string;
 
   @Prop({ type: Types.ObjectId, ref: 'games', required: true })
